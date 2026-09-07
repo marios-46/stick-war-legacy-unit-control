@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>How Stick War Legacy Combines Strategy and Unit Control</title>
+
+  <meta name="description" content="Learn how Stick War Legacy combines strategic planning, resource management, formations, and individual unit control to create flexible battles.">
+
+  <meta name="keywords" content="Stick War Legacy, Stick War Legacy strategy, Stick War Legacy unit control, Stick War Legacy tactics, Stick War Legacy formations, Stick War Legacy gameplay">
+
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+
+  <style>
+    :root {
+      --bg: #070b12;
+      --surface: #0d141d;
+      --surface-2: #111b27;
+      --surface-3: #162331;
+      --text: #edf8f6;
+      --muted: #9aaeb0;
+      --teal: #3ee4c1;
+      --cyan: #56d8ff;
+      --violet: #9477ff;
+      --line: rgba(255,255,255,.09);
+      --shadow: 0 22px 65px rgba(0,0,0,.34);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(62,228,193,.08), transparent 28%),
+        radial-gradient(circle at 90% 15%, rgba(148,119,255,.08), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(1160px, calc(100% - 36px));
+      margin: auto;
+    }
+
+    /* ================= HERO ================= */
+
+    .hero {
+      position: relative;
+      min-height: 720px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(125deg, rgba(62,228,193,.04), transparent 35%),
+        linear-gradient(315deg, rgba(148,119,255,.08), transparent 40%);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 720px;
+      height: 720px;
+      border: 1px solid rgba(62,228,193,.09);
+      transform: rotate(24deg);
+      right: -280px;
+      top: -250px;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 450px;
+      height: 450px;
+      border: 1px solid rgba(148,119,255,.08);
+      transform: rotate(-28deg);
+      left: -260px;
+      bottom: -260px;
+    }
+
+    .hero-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      align-items: center;
+      gap: 70px;
+      padding: 85px 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 14px;
+      border: 1px solid rgba(62,228,193,.25);
+      border-radius: 50px;
+      background: rgba(62,228,193,.06);
+      color: #82f2dc;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 13px var(--teal);
+    }
+
+    h1 {
+      font-size: clamp(40px, 5.5vw, 68px);
+      line-height: 1.02;
+      letter-spacing: -2.5px;
+      max-width: 760px;
+      margin-bottom: 25px;
+    }
+
+    h1 span {
+      color: var(--teal);
+    }
+
+    .hero-description {
+      color: #a9babc;
+      font-size: 18px;
+      max-width: 710px;
+      margin-bottom: 30px;
+    }
+
+    .hero-points {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .hero-points div {
+      padding: 8px 13px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid var(--line);
+      color: #c9d7d7;
+      font-size: 13px;
+    }
+
+    /* LOGO AREA */
+
+    .logo-stage {
+      position: relative;
+      height: 430px;
+      display: grid;
+      place-items: center;
+    }
+
+    .orbit {
+      position: absolute;
+      width: 370px;
+      height: 370px;
+      border: 1px dashed rgba(62,228,193,.24);
+      border-radius: 50%;
+      transform: rotate(-15deg);
+    }
+
+    .orbit::before {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 22px var(--teal);
+      top: 27px;
+      right: 58px;
+    }
+
+    .logo-box {
+      position: relative;
+      width: 290px;
+      height: 290px;
+      display: grid;
+      place-items: center;
+      border-radius: 38px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.09), rgba(255,255,255,.025));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      transform: rotate(2deg);
+    }
+
+    .logo-box::before {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(86,216,255,.12);
+      border-radius: 30px;
+    }
+
+    .logo-box img {
+      position: relative;
+      width: 215px;
+      height: auto;
+      filter: drop-shadow(0 18px 24px rgba(0,0,0,.55));
+    }
+
+    .floating-label {
+      position: absolute;
+      right: -8px;
+      bottom: 45px;
+      padding: 12px 16px;
+      background: #101a25;
+      border: 1px solid rgba(62,228,193,.2);
+      border-radius: 12px;
+      color: #bfeee6;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+    }
+
+    /* ================= MAIN ================= */
+
+    main {
+      padding: 80px 0;
+    }
+
+    .intro {
+      max-width: 930px;
+      margin: 0 auto 75px;
+      padding: 28px 32px;
+      border-radius: 18px;
+      background: linear-gradient(100deg, rgba(62,228,193,.07), rgba(148,119,255,.06));
+      border: 1px solid var(--line);
+      color: #bac8ca;
+      font-size: 16px;
+    }
+
+    .section {
+      margin-bottom: 80px;
+    }
+
+    .section-kicker {
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      font-size: clamp(29px, 4vw, 44px);
+      line-height: 1.15;
+      letter-spacing: -1px;
+      margin-bottom: 18px;
+    }
+
+    h3 {
+      font-size: 20px;
+      line-height: 1.3;
+      margin-bottom: 10px;
+      color: #eff8f7;
+    }
+
+    p {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    /* ================= CORE IDEA ================= */
+
+    .core-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 30px;
+    }
+
+    .core-card {
+      position: relative;
+      padding: 28px;
+      min-height: 230px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .core-card::after {
+      content: "";
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      right: -50px;
+      bottom: -50px;
+      background: rgba(62,228,193,.08);
+    }
+
+    .number {
+      display: inline-grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: rgba(62,228,193,.09);
+      color: var(--teal);
+      font-weight: 900;
+      margin-bottom: 22px;
+    }
+
+    .core-card p {
+      font-size: 14px;
+    }
+
+    /* ================= CONTROL SPLIT ================= */
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 30px;
+    }
+
+    .split-card {
+      padding: 32px;
+      border-radius: 22px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+    }
+
+    .split-card.manual {
+      border-top: 3px solid var(--violet);
+    }
+
+    .split-card.formation {
+      border-top: 3px solid var(--cyan);
+    }
+
+    .split-card ul {
+      list-style: none;
+      margin-top: 18px;
+    }
+
+    .split-card li {
+      position: relative;
+      padding: 9px 0 9px 25px;
+      color: #abbabd;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+
+    .split-card li:last-child {
+      border-bottom: 0;
+    }
+
+    .split-card li::before {
+      content: "◆";
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+      font-size: 9px;
+      top: 13px;
+    }
+
+    /* ================= UNIT CARDS ================= */
+
+    .unit-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 13px;
+      margin-top: 30px;
+    }
+
+    .unit {
+      min-height: 210px;
+      padding: 21px 18px;
+      background: #0b121a;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      transition: .25s ease;
+    }
+
+    .unit:hover {
+      transform: translateY(-5px);
+      border-color: rgba(62,228,193,.35);
+    }
+
+    .unit-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      margin-bottom: 17px;
+      background: linear-gradient(135deg, rgba(62,228,193,.13), rgba(148,119,255,.13));
+      color: #bffaf1;
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .unit h3 {
+      font-size: 17px;
+    }
+
+    .unit p {
+      font-size: 13px;
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* ================= STRATEGY LOOP ================= */
+
+    .loop {
+      position: relative;
+      margin-top: 35px;
+      padding: 35px 25px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(62,228,193,.045), rgba(148,119,255,.06)),
+        var(--surface);
+      border: 1px solid var(--line);
+    }
+
+    .loop-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .loop-item {
+      position: relative;
+      text-align: center;
+      padding: 15px 8px;
+    }
+
+    .loop-item:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -10px;
+      top: 32px;
+      color: #64777b;
+      font-size: 20px;
+    }
+
+    .loop-circle {
+      width: 62px;
+      height: 62px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 13px;
+      border-radius: 50%;
+      border: 1px solid rgba(62,228,193,.3);
+      background: #0d1820;
+      color: var(--teal);
+      font-weight: 900;
+    }
+
+    .loop-item h3 {
+      font-size: 14px;
+    }
+
+    .loop-item p {
+      font-size: 12px;
+      margin: 0;
+    }
+
+    /* ================= MID ARTICLE ANCHOR ================= */
+
+    .feature-box {
+      margin: 80px 0;
+      padding: 38px;
+      border-radius: 25px;
+      background:
+        linear-gradient(115deg, rgba(148,119,255,.13), rgba(62,228,193,.06)),
+        #0d141e;
+      border: 1px solid rgba(148,119,255,.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-box::before {
+      content: "";
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      right: -120px;
+      top: -150px;
+      border: 1px solid rgba(148,119,255,.18);
+      border-radius: 50%;
+    }
+
+    .feature-box p {
+      max-width: 900px;
+    }
+
+    .main-link {
+      display: inline-block;
+      padding: 10px 17px;
+      margin-top: 5px;
+      border-radius: 9px;
+      background: var(--violet);
+      color: white;
+      font-weight: 800;
+      font-size: 14px;
+      box-shadow: 0 9px 25px rgba(148,119,255,.18);
+      transition: .2s ease;
+    }
+
+    .main-link:hover {
+      transform: translateY(-2px);
+      background: #a58dff;
+    }
+
+    /* ================= TABLE ================= */
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      margin-top: 30px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 720px;
+      border-collapse: collapse;
+      background: var(--surface);
+    }
+
+    th {
+      padding: 17px;
+      background: #13202b;
+      text-align: left;
+      color: #dff5f2;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+    }
+
+    td {
+      padding: 17px;
+      color: #a9b9ba;
+      font-size: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    tr:hover td {
+      background: rgba(62,228,193,.025);
+    }
+
+    /* ================= TACTICS ================= */
+
+    .tactic-list {
+      display: grid;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .tactic {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 18px;
+      align-items: start;
+      padding: 22px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 17px;
+    }
+
+    .tactic-number {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(62,228,193,.16), rgba(148,119,255,.16));
+      color: var(--teal);
+      font-weight: 900;
+    }
+
+    .tactic p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    /* ================= SECONDARY LINKS ================= */
+
+    .resources {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 30px;
+    }
+
+    .resource {
+      padding: 25px;
+      border-radius: 18px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      transition: .2s ease;
+    }
+
+    .resource:hover {
+      transform: translateY(-3px);
+      border-color: rgba(62,228,193,.3);
+    }
+
+    .resource-label {
+      color: var(--teal);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .resource a {
+      color: #dffaf5;
+      font-weight: 800;
+    }
+
+    .resource p {
+      font-size: 13px;
+      margin: 7px 0 0;
+    }
+
+    /* ================= FAQ ================= */
+
+    .faq {
+      display: grid;
+      gap: 12px;
+      margin-top: 30px;
+    }
+
+    details {
+      padding: 19px 22px;
+      border-radius: 15px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+
+    summary {
+      cursor: pointer;
+      color: #e8f4f3;
+      font-weight: 750;
+    }
+
+    details p {
+      margin: 13px 0 0;
+      font-size: 14px;
+    }
+
+    /* ================= CONCLUSION ================= */
+
+    .final-box {
+      padding: 45px;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 85% 20%, rgba(62,228,193,.12), transparent 25%),
+        linear-gradient(135deg, #101c27, #111625);
+      border: 1px solid rgba(62,228,193,.14);
+    }
+
+    /* ================= FOOTER ================= */
+
+    footer {
+      padding: 38px 0;
+      border-top: 1px solid var(--line);
+      background: #05080d;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .footer-title {
+      color: #dcebea;
+      font-weight: 800;
+    }
+
+    .footer-text {
+      margin: 0;
+      color: #687879;
+      font-size: 12px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 950px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .logo-stage {
+        height: 350px;
+      }
+
+      .core-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .unit-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .loop-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .loop-item:nth-child(3)::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        width: min(100% - 28px, 1160px);
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .hero-grid {
+        padding: 60px 0;
+      }
+
+      h1 {
+        letter-spacing: -1.5px;
+      }
+
+      .hero-description {
+        font-size: 16px;
+      }
+
+      .logo-stage {
+        height: 310px;
+      }
+
+      .orbit {
+        width: 280px;
+        height: 280px;
+      }
+
+      .logo-box {
+        width: 225px;
+        height: 225px;
+      }
+
+      .logo-box img {
+        width: 165px;
+      }
+
+      .split,
+      .resources {
+        grid-template-columns: 1fr;
+      }
+
+      .unit-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .loop-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .loop-item:not(:last-child)::after {
+        display: none;
+      }
+
+      .feature-box,
+      .final-box {
+        padding: 27px;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .unit-grid,
+      .loop-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-points {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+
+</head>
+
+<body id="top">
+
+  <!-- HERO -->
+
+  <header class="hero">
+    <div class="container hero-grid">
+
+
+  <div>
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Strategy &amp; Tactical Control
+    </div>
+
+    <h1>
+      How Stick War Legacy Combines
+      <span>Strategy and Unit Control</span>
+    </h1>
+
+    <p class="hero-description">
+      Stick War: Legacy turns a simple stick-figure battlefield into a
+      strategy system where resource management, army composition,
+      formations, timing, and individual unit control all influence the
+      outcome of a battle.
+    </p>
+
+    <div class="hero-points">
+      <div>Army Management</div>
+      <div>Individual Units</div>
+      <div>Formations</div>
+      <div>Gold Economy</div>
+      <div>Battle Timing</div>
+    </div>
+  </div>
+
+  <div class="logo-stage">
+    <div class="orbit"></div>
+
+    <div class="logo-box">
+      <img
+        src="https://www.maxgames.com/img/mobile/button_stickwar_selected.png?v=1"
+        alt="Stick War Legacy official game logo"
+      >
+    </div>
+
+    <div class="floating-label">
+      INAMORTA · ORDER
+    </div>
+  </div>
+
+</div>
+
+
+  </header>
+
+  <main>
+    <div class="container">
+
+
+  <div class="intro">
+    <strong>Stick War: Legacy</strong> combines two styles of play that
+    normally require different approaches. One side is broad strategy:
+    deciding what to build, when to attack, how much gold to save, and how
+    to shape an army. The other side is direct control, where individual
+    units can be managed when a specific action matters. The result is a
+    battlefield where a good army helps, but good decisions still matter
+    just as much.
+  </div>
+
+  <!-- SECTION 1 -->
+  <section class="section">
+    <div class="section-kicker">01 · Core Concept</div>
+    <h2>Why Strategy and Control Work Together</h2>
+
+    <p>
+      Many strategy games make the player choose between managing a large
+      army and directly controlling individual characters. Stick War:
+      Legacy makes these two ideas part of the same system. The current
+      game description specifically allows players to control their army
+      in formations or play individual units, giving them control over
+      every stickman on the battlefield.
+    </p>
+
+    <p>
+      That design creates an interesting relationship between long-term
+      decisions and immediate actions. Before a battle develops, you need
+      to think about your economy and the units you want to produce. Once
+      combat begins, however, positioning and individual actions can
+      determine whether that plan actually works.
+    </p>
+
+    <p>
+      A strong strategy therefore is not simply about producing the most
+      units. It is about creating an army that gives you useful options,
+      then knowing when direct intervention can improve those options.
+    </p>
+
+    <div class="core-grid">
+
+      <div class="core-card">
+        <div class="number">01</div>
+        <h3>Plan</h3>
+        <p>
+          Decide how to use your gold, which units fit the situation, and
+          whether the battle calls for pressure or patience.
+        </p>
+      </div>
+
+      <div class="core-card">
+        <div class="number">02</div>
+        <h3>Build</h3>
+        <p>
+          Turn your economic resources into an army with a useful mixture
+          of frontline, ranged, magical, or heavy support.
+        </p>
+      </div>
+
+      <div class="core-card">
+        <div class="number">03</div>
+        <h3>Control</h3>
+        <p>
+          Use formations for broad commands while taking direct control
+          when a particular unit or battlefield action needs attention.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section class="section">
+    <div class="section-kicker">02 · Two Layers of Control</div>
+    <h2>Formation Control vs Individual Control</h2>
+
+    <p>
+      The game's control system is one of the reasons its battles can feel
+      more involved than a simple unit-spawning game. Formation control
+      helps manage the army as a group, while individual control allows
+      more precise decisions.
+    </p>
+
+    <div class="split">
+
+      <div class="split-card formation">
+        <h3>Formation-Based Play</h3>
+
+        <p>
+          Formation control is useful when the army needs to move together
+          or maintain a broad battlefield structure.
+        </p>
+
+        <ul>
+          <li>Keep multiple units organized.</li>
+          <li>Move an army toward an objective.</li>
+          <li>Maintain a coherent frontline.</li>
+          <li>Reduce the need for constant individual commands.</li>
+          <li>Coordinate large groups during general engagements.</li>
+        </ul>
+      </div>
+
+      <div class="split-card manual">
+        <h3>Individual Unit Control</h3>
+
+        <p>
+          Direct control becomes valuable when a particular unit needs to
+          perform an action that cannot be handled effectively by a broad
+          command alone.
+        </p>
+
+        <ul>
+          <li>Adjust a unit's position.</li>
+          <li>React to an immediate threat.</li>
+          <li>Use a unit's specific battlefield role.</li>
+          <li>Improve positioning during an engagement.</li>
+          <li>Make precise decisions without moving the entire army.</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section class="section">
+    <div class="section-kicker">03 · Unit Roles</div>
+    <h2>Every Unit Changes the Strategic Picture</h2>
+
+    <p>
+      Stick War: Legacy gives the player access to several recognizable
+      battlefield roles. The official listing highlights Sword, Spear,
+      Archer, Mage, and Giant units. Each adds a different type of
+      decision to army composition.
+    </p>
+
+    <p>
+      The important point is that units should not be viewed only as
+      separate characters. They are pieces of a larger strategy. A ranged
+      unit may require protection, a frontline unit can influence where
+      the battle takes place, and a powerful unit can change how much
+      pressure the opponent must handle.
+    </p>
+
+    <div class="unit-grid">
+
+      <div class="unit">
+        <div class="unit-icon">S</div>
+        <h3>Sword</h3>
+        <p>
+          A close-range option suited to direct frontline engagements and
+          pressure.
+        </p>
+      </div>
+
+      <div class="unit">
+        <div class="unit-icon">P</div>
+        <h3>Spear</h3>
+        <p>
+          A durable battlefield role that gives the army another way to
+          contest direct attacks.
+        </p>
+      </div>
+
+      <div class="unit">
+        <div class="unit-icon">A</div>
+        <h3>Archer</h3>
+        <p>
+          A ranged role that makes positioning and protection important
+          parts of the strategy.
+        </p>
+      </div>
+
+      <div class="unit">
+        <div class="unit-icon">M</div>
+        <h3>Mage</h3>
+        <p>
+          Adds magical capabilities and expands the tactical choices
+          available during battles.
+        </p>
+      </div>
+
+      <div class="unit">
+        <div class="unit-icon">G</div>
+        <h3>Giant</h3>
+        <p>
+          A heavy option that can influence how you approach major
+          engagements.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 4 -->
+  <section class="section">
+    <div class="section-kicker">04 · Economy</div>
+    <h2>Gold Is the Link Between Strategy and Combat</h2>
+
+    <p>
+      Unit control would have limited value without an economy supporting
+      it. Stick War: Legacy includes gold mining as a central part of the
+      gameplay loop. That means every battle begins with an economic
+      question: how should available resources be converted into
+      battlefield strength?
+    </p>
+
+    <p>
+      Spending everything immediately can create a large army, but it may
+      leave you with less flexibility when the situation changes. On the
+      other hand, saving too much can delay the army you need to survive
+      pressure.
+    </p>
+
+    <p>
+      Effective resource management is therefore about timing. Players
+      should think about what their next purchase or unit contributes to
+      the overall plan rather than treating every available piece of gold
+      as something that must be spent immediately.
+    </p>
+
+    <div class="loop">
+
+      <div class="loop-grid">
+
+        <div class="loop-item">
+          <div class="loop-circle">01</div>
+          <h3>Mine</h3>
+          <p>Generate the resources needed to build.</p>
+        </div>
+
+        <div class="loop-item">
+          <div class="loop-circle">02</div>
+          <h3>Choose</h3>
+          <p>Select units that fit the current situation.</p>
+        </div>
+
+        <div class="loop-item">
+          <div class="loop-circle">03</div>
+          <h3>Position</h3>
+          <p>Arrange the army for the next engagement.</p>
+        </div>
+
+        <div class="loop-item">
+          <div class="loop-circle">04</div>
+          <h3>Fight</h3>
+          <p>Use formations and direct control.</p>
+        </div>
+
+        <div class="loop-item">
+          <div class="loop-circle">05</div>
+          <h3>Adapt</h3>
+          <p>Change the plan when the battlefield changes.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MID ARTICLE MAIN ANCHOR -->
+  <div class="feature-box">
+    <div class="section-kicker">05 · Strategy Resource</div>
+
+    <h2>Turning Planning Into Better Battlefield Decisions</h2>
+
+    <p>
+      Once you understand how the economy, unit roles, and control systems
+      interact, external strategy resources can be useful for comparing
+      different approaches to difficult battles. For players looking for
+      additional information about gameplay strategies, the
+      <strong>Stick War Legacy MOD APK VIP 999</strong> resource can be
+      explored separately, while the core principles of strategy remain
+      centered on resource management, unit selection, positioning, and
+      timing.
+    </p>
+
+    <p>
+      The important distinction is that strategy should not depend on one
+      particular build. A useful understanding of the game gives you the
+      ability to change your plan when an enemy behaves differently or a
+      mission introduces a new condition.
+    </p>
+
+    <a
+      class="main-link"
+      href="https://stickwarlegacy.app/"
+      target="_blank"
+      rel="noopener"
+    >
+      Explore Stick War Legacy MOD APK VIP 999
+    </a>
+  </div>
+
+  <!-- SECTION 6 -->
+  <section class="section">
+    <div class="section-kicker">06 · Tactical Decisions</div>
+    <h2>When Should You Take Direct Control?</h2>
+
+    <p>
+      Direct control is most valuable when a small action can produce a
+      meaningful change. You do not need to manually control every unit at
+      every second. Doing so can make it harder to pay attention to the
+      wider battle.
+    </p>
+
+    <p>
+      A better approach is to use broad commands for ordinary movement and
+      reserve individual control for moments where precision matters.
+      This creates a useful division of attention: the army follows the
+      overall plan while selected units receive additional attention when
+      necessary.
+    </p>
+
+    <div class="tactic-list">
+
+      <div class="tactic">
+        <div class="tactic-number">01</div>
+        <div>
+          <h3>React to a Break in the Line</h3>
+          <p>
+            If one part of the army becomes exposed, individual control can
+            help stabilize that area without completely changing the rest
+            of the formation.
+          </p>
+        </div>
+      </div>
+
+      <div class="tactic">
+        <div class="tactic-number">02</div>
+        <div>
+          <h3>Protect Important Units</h3>
+          <p>
+            A valuable ranged or support unit may require a different
+            position from the main group. Direct control can help keep it
+            in a useful location.
+          </p>
+        </div>
+      </div>
+
+      <div class="tactic">
+        <div class="tactic-number">03</div>
+        <div>
+          <h3>Exploit an Opening</h3>
+          <p>
+            When the opponent's formation creates an opportunity, precise
+            movement can let one unit respond without forcing the entire
+            army to move.
+          </p>
+        </div>
+      </div>
+
+      <div class="tactic">
+        <div class="tactic-number">04</div>
+        <div>
+          <h3>Recover From Unexpected Pressure</h3>
+          <p>
+            If the enemy attacks from an unexpected direction, individual
+            control can provide a faster response while the broader army
+            remains organized.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 7 -->
+  <section class="section">
+    <div class="section-kicker">07 · Composition</div>
+    <h2>Why Army Composition Matters</h2>
+
+    <p>
+      A strategy based entirely on one type of unit can become predictable.
+      A more flexible army gives you multiple ways to respond to pressure.
+      The right balance depends on the objective, available resources, and
+      the opposing force.
+    </p>
+
+    <div class="table-wrap">
+
+      <table>
+        <thead>
+          <tr>
+            <th>Strategic Need</th>
+            <th>Useful Consideration</th>
+            <th>Control Priority</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>Frontline pressure</td>
+            <td>Use durable close-range options.</td>
+            <td>Formation positioning</td>
+          </tr>
+
+          <tr>
+            <td>Ranged support</td>
+            <td>Maintain useful distance and protection.</td>
+            <td>Individual positioning</td>
+          </tr>
+
+          <tr>
+            <td>Heavy pressure</td>
+            <td>Build around powerful units when resources allow.</td>
+            <td>Timing and formation</td>
+          </tr>
+
+          <tr>
+            <td>Defensive response</td>
+            <td>Preserve enough strength to answer attacks.</td>
+            <td>Reactive control</td>
+          </tr>
+
+          <tr>
+            <td>Long battles</td>
+            <td>Keep the economy and production cycle healthy.</td>
+            <td>Strategic management</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </section>
+
+  <!-- SECTION 8 -->
+  <section class="section">
+    <div class="section-kicker">08 · Adaptation</div>
+    <h2>The Best Strategy Is Not Always the Same</h2>
+
+    <p>
+      One of the biggest lessons in Stick War: Legacy is that a successful
+      strategy should be flexible. The game contains a Classic Campaign,
+      Missions Mode, Tournament mode, and Endless Deads, so players are
+      regularly asked to approach objectives in different ways.
+    </p>
+
+    <p>
+      Missions can introduce special conditions, while Tournament battles
+      place the player against a sequence of AI challengers. Endless Deads
+      changes the focus again by asking how long an army can survive
+      against waves of enemies. These different formats reward players who
+      understand the underlying systems rather than relying on one fixed
+      sequence of actions.
+    </p>
+
+    <p>
+      Adaptation can be as simple as changing production priorities or as
+      significant as switching from aggressive movement to a more
+      defensive plan. The important thing is to recognize that the
+      battlefield is a changing problem.
+    </p>
+  </section>
+
+  <!-- SECTION 9 -->
+  <section class="section">
+    <div class="section-kicker">09 · Practical Approach</div>
+    <h2>A Simple Battle Planning Framework</h2>
+
+    <p>
+      Players who are still learning the relationship between strategy and
+      control can use a simple five-stage process. It does not dictate a
+      specific build; instead, it creates a framework for making better
+      decisions.
+    </p>
+
+    <div class="tactic-list">
+
+      <div class="tactic">
+        <div class="tactic-number">1</div>
+        <div>
+          <h3>Read the Objective</h3>
+          <p>
+            Understand what the battle actually requires before deciding
+            how aggressively to spend resources.
+          </p>
+        </div>
+      </div>
+
+      <div class="tactic">
+        <div class="tactic-number">2</div>
+        <div>
+          <h3>Establish the Economy</h3>
+          <p>
+            Create a resource flow that can support the army you intend to
+            use rather than producing units without a clear purpose.
+          </p>
+        </div>
+      </div>
+
+      <div class="tactic">
+        <div class="tactic-number">3</div>
+        <div>
+          <h3>Build With Purpose</h3>
+          <p>
+            Think about what each unit contributes. A good army is one
+            where the pieces work together instead of simply existing in
+            large numbers.
+          </p>
+        </div>
+      </div>
+
+      <div class="tactic">
+        <div class="tactic-number">4</div>
+        <div>
+          <h3>Use Broad Commands First</h3>
+          <p>
+            Keep the army organized with formations and general movement,
+            then intervene directly when a particular situation requires
+            precision.
+          </p>
+        </div>
+      </div>
+
+      <div class="tactic">
+        <div class="tactic-number">5</div>
+        <div>
+          <h3>Adapt After Every Engagement</h3>
+          <p>
+            Look at what worked and what did not. Adjust your next
+            production choice or control decision rather than repeating the
+            same approach automatically.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 10 -->
+  <section class="section">
+    <div class="section-kicker">10 · Useful Reading</div>
+    <h2>More Stick War Legacy Strategy Resources</h2>
+
+    <p>
+      Different guides can be useful for different parts of the game.
+      Players interested in practical battle advice can explore the
+      following resources for additional strategy-focused information.
+    </p>
+
+    <div class="resources">
+
+      <div class="resource">
+        <div class="resource-label">Battle Resource</div>
+
+        <a
+          href="https://marios-46.github.io/stick-war-battle-tips/"
+          target="_blank"
+          rel="noopener"
+        >
+          Stick War Legacy Battle Tips
+        </a>
+
+        <p>
+          A separate resource focused on battle ideas, tactical decisions,
+          and practical gameplay tips.
+        </p>
+      </div>
+
+      <div class="resource">
+        <div class="resource-label">Strategy Resource</div>
+
+        <a
+          href="https://stick-war-legacy-strategy.netlify.app/"
+          target="_blank"
+          rel="noopener"
+        >
+          Stick War Legacy Strategy Guide
+        </a>
+
+        <p>
+          Explore another strategy-focused page covering approaches to
+          Stick War Legacy gameplay.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 11 -->
+  <section class="section">
+    <div class="section-kicker">11 · Common Mistakes</div>
+    <h2>Strategy Mistakes That Limit Unit Control</h2>
+
+    <p>
+      Having direct control over individual units does not automatically
+      make every decision better. In fact, too much manual intervention
+      can distract from the larger battle. A few common mistakes are worth
+      avoiding.
+    </p>
+
+    <div class="core-grid">
+
+      <div class="core-card">
+        <div class="number">A</div>
+        <h3>Overcontrolling</h3>
+        <p>
+          Trying to manage every unit continuously can make it difficult
+          to monitor resources and the overall battlefield.
+        </p>
+      </div>
+
+      <div class="core-card">
+        <div class="number">B</div>
+        <h3>Ignoring Economy</h3>
+        <p>
+          A strong tactical move has limited value if the army cannot be
+          replaced or expanded when the situation changes.
+        </p>
+      </div>
+
+      <div class="core-card">
+        <div class="number">C</div>
+        <h3>Using One Plan</h3>
+        <p>
+          Different missions and opponents can require different approaches
+          to production, positioning, and timing.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="section-kicker">12 · FAQ</div>
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq">
+
+      <details>
+        <summary>What makes Stick War Legacy a strategy game?</summary>
+        <p>
+          The game requires players to manage gold, produce units, choose
+          army compositions, position forces, respond to enemy pressure,
+          and work toward objectives such as destroying the opposing
+          statue.
+        </p>
+      </details>
+
+      <details>
+        <summary>Can players control individual units?</summary>
+        <p>
+          Yes. The official game description states that players can
+          control their army in formations or play individual units,
+          providing direct control over the stickmen.
+        </p>
+      </details>
+
+      <details>
+        <summary>Why are formations useful?</summary>
+        <p>
+          Formations allow players to manage groups of units more
+          efficiently. They are particularly useful when the army needs to
+          move or fight as a coordinated force.
+        </p>
+      </details>
+
+      <details>
+        <summary>Why is gold important?</summary>
+        <p>
+          Gold is used as an important economic resource for building the
+          army. Mining therefore becomes part of the strategic decision
+          cycle rather than being separate from combat.
+        </p>
+      </details>
+
+      <details>
+        <summary>Should I manually control every unit?</summary>
+        <p>
+          Not necessarily. Broad formation commands can handle many
+          situations efficiently, while individual control is most useful
+          when a particular unit needs precise positioning or action.
+        </p>
+      </details>
+
+      <details>
+        <summary>Which units are available in Stick War Legacy?</summary>
+        <p>
+          The current game listing highlights Sword, Spear, Archer, Mage,
+          and Giant units, giving players several different battlefield
+          roles to consider.
+        </p>
+      </details>
+
+      <details>
+        <summary>Does the strategy change between game modes?</summary>
+        <p>
+          Yes. The Classic Campaign, Missions, Tournament, and Endless
+          Deads use related core mechanics but can place different demands
+          on resource management, unit selection, defense, and timing.
+        </p>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- CONCLUSION -->
+  <section class="section">
+    <div class="final-box">
+
+      <div class="section-kicker">Final Thoughts</div>
+
+      <h2>Strategy Gives Direction, Control Gives Precision</h2>
+
+      <p>
+        Stick War: Legacy works because its strategy system does not stop
+        at choosing what units to build. The player also has meaningful
+        control over how those units behave on the battlefield. Formation
+        commands provide the broad structure, while individual control
+        allows precise intervention when the situation demands it.
+      </p>
+
+      <p>
+        That combination makes resource management, army composition,
+        positioning, timing, and tactical awareness part of one connected
+        system. Gold determines what options become available, unit roles
+        determine how those options can be used, and direct control helps
+        turn a strategic plan into actual battlefield actions.
+      </p>
+
+      <p>
+        The most useful mindset is therefore not to choose between
+        strategy and control. Use both. Plan the army before the battle,
+        organize it with broad commands, watch how the opponent responds,
+        and step in directly when a particular moment deserves attention.
+        This approach keeps the battlefield manageable while still giving
+        you the precision that makes Stick War: Legacy distinctive.
+      </p>
+
+    </div>
+  </section>
+
+</div>
+
+
+  </main>
+
+  <footer>
+    <div class="container footer-content">
+      <div class="footer-title">
+        Stick War Legacy Strategy Guide
+      </div>
+
+  <p class="footer-text">
+    Informational content about strategy, units, formations, and gameplay.
+  </p>
+</div>
+
+
+  </footer>
+
+</body>
+</html>
